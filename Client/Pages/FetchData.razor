@@ -1,0 +1,228 @@
+﻿@page "/fetchdata"
+@using ToDo.Shared
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<style>
+    .todo-nav {
+        margin-top: 10px
+    }
+
+    .todo-list {
+        margin: 10px 0
+    }
+
+        .todo-list .todo-item {
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 0;
+            background: #f7f7f7
+        }
+
+        .todo-list.only-active .todo-item.complete {
+            display: none
+        }
+
+        .todo-list.only-active .todo-item:not(.complete) {
+            display: block
+        }
+
+        .todo-list.only-complete .todo-item:not(.complete) {
+            display: none
+        }
+
+        .todo-list.only-complete .todo-item.complete {
+            display: block
+        }
+
+        .todo-list .todo-item.complete span {
+            text-decoration: line-through
+        }
+
+    .remove-todo-item {
+        color: #ccc;
+        visibility: hidden
+    }
+
+        .remove-todo-item:hover {
+            color: #5f5f5f
+        }
+
+    .todo-item:hover .remove-todo-item {
+        visibility: visible
+    }
+
+    div.checker {
+        width: 18px;
+        height: 18px
+    }
+
+        div.checker input,
+        div.checker span {
+            width: 18px;
+            height: 18px
+        }
+
+        div.checker span {
+            display: -moz-inline-box;
+            display: inline-block;
+            zoom: 1;
+            text-align: center;
+            background-position: 0 -260px;
+        }
+
+        div.checker, div.checker input, div.checker span {
+            width: 19px;
+            height: 19px;
+        }
+
+    div.checker, div.radio, div.uploader {
+        position: relative;
+    }
+
+        div.button, div.button *, div.checker, div.checker *, div.radio, div.radio *, div.selector, div.selector *, div.uploader, div.uploader * {
+            margin: 0;
+            padding: 0;
+        }
+
+    div.button, div.checker, div.radio, div.selector, div.uploader {
+        display: -moz-inline-box;
+        display: inline-block;
+        zoom: 1;
+        vertical-align: middle;
+    }
+
+    .card {
+        padding: 25px;
+        margin-bottom: 20px;
+        border: initial;
+        background: #fff;
+        border-radius: calc(.15rem - 1px);
+        box-shadow: 0 1px 15px rgba(0,0,0,0.04), 0 1px 6px rgba(0,0,0,0.04);
+    }
+</style>
+
+@if (_todoItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-white">
+                    <div class="card-body">
+                        <form @onsubmit="OnCreateNewTodod">
+                            <input type="text" class="form-control add-task" placeholder="New Task..." id="title" @bind-value="newTodoItem.Title">
+                        </form>
+                        <ul class="nav nav-pills todo-nav">
+                            <li role="presentation" class="nav-item all-task active"><a @onclick="ShowAll" class="nav-link" style="cursor:pointer">All</a></li>
+                            <li role="presentation" class="nav-item active-task"><a @onclick="ShowActive" class="nav-link" style="cursor:pointer">Active</a></li>
+                            <li role="presentation" class="nav-item completed-task"><a @onclick="ShowCompleted" class="nav-link" style="cursor:pointer">Completed</a></li>
+                        </ul>
+                        <div class="todo-list">
+
+                            @foreach (var todoItem in _todoItems)
+                            {
+                                <div class="todo-item @(todoItem.IsComplete ? "complete" : "")">
+                                    <div class="checker">
+                                        <span class="">
+                                            <input type="checkbox" checked=@todoItem.IsComplete @onchange="()=>TagleTodoStatus(todoItem)" />
+                                        </span>
+                                    </div>
+                                    <span>@todoItem.Title</span>
+                                    <a @onclick="()=>OnTodoDelete(todoItem)" class="float-right remove-todo-item"><i class="fa-sharp fa-solid fa-xmark"></i></a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in _todoItems)
+            {
+
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private TodoItem[]? _todoItems;
+    private TodoItem? newTodoItem = new() { Date = System.DateTime.Now };
+    private bool? completed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _todoItems = await Http.GetFromJsonAsync<TodoItem[]>("todos");
+    }
+
+    async Task OnTodoDelete(TodoItem todoItem)
+    {
+        var responce = await Http.DeleteAsync("todos/" + todoItem.Id.ToString());
+        responce.EnsureSuccessStatusCode();
+
+        await LoadItems();
+    }
+
+    async Task TagleTodoStatus(TodoItem todoItem)
+    {
+        todoItem.IsComplete = !todoItem.IsComplete;
+        var responce = await Http.PutAsJsonAsync("todos/" + todoItem.Id.ToString(), todoItem);
+        responce.EnsureSuccessStatusCode();
+        await LoadItems();
+    }
+
+    async Task ShowActive()
+    {
+        completed = false;
+        await LoadItems();
+    }
+
+    async Task ShowCompleted()
+    {
+        completed = true;
+        await LoadItems();
+    }
+
+    async Task ShowAll()
+    {
+        completed = null;
+        await LoadItems();
+    }
+
+    async Task OnCreateNewTodod()
+    {
+        var responce = await Http.PostAsJsonAsync("todos", newTodoItem);
+        responce.EnsureSuccessStatusCode();
+        await LoadItems();
+        newTodoItem = new() { Date = System.DateTime.Now };
+    }
+    async Task LoadItems()
+    {
+        if (completed is null)
+            _todoItems = await Http.GetFromJsonAsync<TodoItem[]>("todos");
+        else
+            _todoItems = await Http.GetFromJsonAsync<TodoItem[]>("todos?completed=" + completed.Value);
+
+    }
+
+}
