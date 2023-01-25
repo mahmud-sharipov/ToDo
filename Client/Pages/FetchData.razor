@@ -146,23 +146,6 @@ else
             </div>
         </div>
     </div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in _todoItems)
-            {
-
-            }
-        </tbody>
-    </table>
 }
 
 @code {
@@ -172,14 +155,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _todoItems = await Http.GetFromJsonAsync<TodoItem[]>("todos");
+        await LoadItems();
     }
 
     async Task OnTodoDelete(TodoItem todoItem)
     {
         var responce = await Http.DeleteAsync("todos/" + todoItem.Id.ToString());
         responce.EnsureSuccessStatusCode();
-
         await LoadItems();
     }
 

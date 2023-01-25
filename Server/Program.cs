@@ -11,10 +11,11 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddCors();
+    var dbCongig = builder.Configuration.GetSection("Database");
+    Console.WriteLine($"Host={dbCongig["Server"]};Database={dbCongig["Name"]};Username={dbCongig["User"]};Password={dbCongig["Password"]}");
     builder.Services.AddDbContext<TodoContext>(options =>
     {
-        //var connectionString = builder.Configuration.GetConnectionString("Todos") ?? "Data Source=Todos.db";
-        options.UseNpgsql("Host=localhost;Database=ToDo;Username=admin;Password=admin");
+        options.UseNpgsql($"Host={dbCongig["Server"]};Database={dbCongig["Name"]};Username={dbCongig["User"]};Password={dbCongig["Password"]}");
         //options.UseInMemoryDatabase("ToDo");
     });
 }
@@ -39,8 +40,6 @@ var app = builder.Build();
         option.AllowAnyMethod();
         option.AllowAnyOrigin();
     });
-    app.UseHttpsRedirection();
-    app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();
 }

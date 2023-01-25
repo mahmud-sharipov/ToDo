@@ -1,14 +1,57 @@
 version: '3.4'
 
 services:
-  todo.server:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+    ports:
+     - "5432:5432"
+    volumes:
+     - ${APPDATA}/custom/mount:/var/lib/postgresql/data
+    networks:
+      - overlay
+
+  todo-server:
     image: ${DOCKER_REGISTRY-}todoserver
     build:
       context: .
       dockerfile: Server/Dockerfile
-  todo.webui:
-    image: ${DOCKER_REGISTRY-}todowebui
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Database:Server=db
+      - Database:Name=ToDo
+      - Database:User=admin
+      - Database:Password=admin
+    ports:
+      - "1555:80"
+      - "15555:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - db
+    networks:
+      - overlay
+  todo-client:
+    image: todoclient
     build:
       context: .
-      dockerfile: WebUI/Dockerfile
+      dockerfile: Client/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Server:Url=http://localhost:1555/api/
+    ports:
+      - "8080:80"
+      - "16666:443"
+    depends_on:
+      - todo-server
+    networks:
+      - overlay
 
+networks:
+  overlay:
