@@ -49,7 +49,7 @@ metadata:
   #namespace: mongo-demo
 spec:
   selector:
-    app: mongodb
+    app: mongodAdd-AppProvisionedSharedPackageContainerb
   ports:
     - protocol: TCP
       port: 27017
