@@ -96,6 +96,12 @@ services:
         networks:
             - todo_nets
 
+    todo.webui:
+      image: ${DOCKER_REGISTRY-}todowebui
+      build:
+        context: .
+        dockerfile: WebUI/Dockerfile
+
 networks:
   todo_nets:
     driver: bridge

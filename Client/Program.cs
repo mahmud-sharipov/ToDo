@@ -11,7 +11,7 @@ public class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://localhost:1555/api/") });
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://localhost:1555/api/") });
 
         await builder.Build().RunAsync();
     }
