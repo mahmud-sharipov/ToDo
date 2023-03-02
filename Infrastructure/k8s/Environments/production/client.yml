@@ -25,11 +25,11 @@ spec:
     spec:
       containers:
         - name: todo-client
-          image: mahmudsharipov/todoclient:1.6
+          image: mahmudsharipov/todoclient:1.7
           resources:
             limits:
-              memory: "3Gi"
-              cpu: "1"
+              memory: "500Mi"
+              cpu: "0.5"
           ports:
             - containerPort: 80
             - containerPort: 443
@@ -50,28 +50,29 @@ metadata:
   name: todo-client-service
   namespace: todo-dev
 spec:
+  type: LoadBalancer
   selector:
     app: client
   ports:
     - protocol: TCP
-      port: 1666
+      port: 30002
       targetPort: 80
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: todo-client-ingress
-  namespace: todo-dev
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: client.localdev.me
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: todo-client-service
-                port:
-                  number: 1666
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: todo-client-ingress
+#  namespace: todo-dev
+#spec:
+ # ingressClassName: nginx
+#  rules:
+#    - host: client.localdev.me
+#      http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: todo-client-service
+#                port:
+#                  number: 1666

@@ -30,7 +30,7 @@ spec:
           image: postgres:latest
           resources:
             limits:
-              memory: "2Gi"
+              memory: "1Gi"
               cpu: "1"
           ports:
             - containerPort: 5432

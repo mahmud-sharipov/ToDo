@@ -12,7 +12,7 @@ namespace Todo.WebUI
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ServerUrl"]) });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://51.138.183.239:30001/api/") });
             builder.Services.AddScoped<ToDoService>();
 
             var app = builder.Build();
