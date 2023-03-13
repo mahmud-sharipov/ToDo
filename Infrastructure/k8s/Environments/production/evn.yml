@@ -15,3 +15,13 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: todo-dev
+type: Opaque
+data:
+  postgres-password: dXNlcm5hbWU=
+  postgres-user: cGFzc3dvcmQ=
