@@ -30,7 +30,6 @@ metadata:
   name: todo-client-service
   namespace: todo-dev
 spec:
-  type: LoadBalancer
   selector:
     app: client
   ports:
