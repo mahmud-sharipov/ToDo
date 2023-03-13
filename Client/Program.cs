@@ -10,8 +10,9 @@ public class Program
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
-
-        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://localhost:1555/api/") });
+        var t = builder.Configuration["ServerUrl"];
+        Console.WriteLine(t);
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://api.mahmud.20.219.235.7.nip.io/api/") });
 
         await builder.Build().RunAsync();
     }

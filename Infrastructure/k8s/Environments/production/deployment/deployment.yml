@@ -158,7 +158,7 @@ spec:
     spec:
       containers:
         - name: todo-client
-          image: mahmudsharipov/todoclient:1.8
+          image: mahmudsharipov/todoclient:1.7
           resources:
             limits:
               memory: "500Mi"

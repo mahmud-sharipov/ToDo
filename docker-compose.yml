@@ -37,11 +37,11 @@ services:
         networks:
             - todo_nets
 
-    todo.webui:
-        image: ${DOCKER_REGISTRY-}todowebui
+    todo.client:
+        image: ${DOCKER_REGISTRY-}todoclient
         build:
-            context: .
-            dockerfile: WebUI/Dockerfile
+          context: .
+          dockerfile: Client/Dockerfile
         environment:
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - ASPNETCORE_ENVIRONMENT=Development
@@ -63,3 +63,5 @@ volumes:
     driver: local
   kibanadata:
     driver: local
+
+
