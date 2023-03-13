@@ -158,7 +158,7 @@ spec:
     spec:
       containers:
         - name: todo-client
-          image: mahmudsharipov/todoclient:1.7
+          image: mahmudsharipov/todoclient:1.8
           resources:
             limits:
               memory: "500Mi"
@@ -186,7 +186,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: mahmud.api.20.219.235.7.nip.io
+    - host: api.mahmud.20.219.235.7.nip.io
       http:
         paths:
           - path: /

@@ -1,47 +1,6 @@
 version: '3.4'
 
 services:
-
-    es01:
-        image: elasticsearch:8.6.0
-        container_name: es01
-        environment:
-          - node.name=es01
-          - cluster.name=es-docker-cluster
-          - cluster.initial_master_nodes=es01
-          - bootstrap.memory_lock=true
-          - "ES_JAVA_OPTS=-Xms512M -Xmx512M"
-          - xpack.security.enabled=false
-          - xpack.security.http.ssl.enabled=false
-          - xpack.security.transport.ssl.enabled=false
-        ulimits:
-          memlock: 
-            soft: -1
-            hard: -1
-        ports:
-          - 9200:9200
-          - 9300:9300
-        networks:
-          - todo_nets
-        volumes:
-          - esdata01:/usr/share/elasticsearch/data
-
-    kib01:
-        image: kibana:8.6.0
-        container_name: kib01
-        restart: always
-        ports:
-         - 5601:5601
-        environment:
-         - ELASTICSEARCH_URL=http://es01:9200
-         - ELASTICSEARCH_HOSTS=http://es01:9200
-        depends_on:
-          - es01
-        networks:
-          - todo_nets
-        volumes:
-           - kibanadata:/usr/share/kibana/data
-
     db:
         image: postgres
         restart: always
@@ -75,32 +34,25 @@ services:
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
         depends_on:
             - db
-            - kib01
         networks:
             - todo_nets
 
-    todo-client:
-        image: todoclient
+    todo.webui:
+        image: ${DOCKER_REGISTRY-}todowebui
         build:
             context: .
-            dockerfile: Client/Dockerfile
+            dockerfile: WebUI/Dockerfile
         environment:
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - ASPNETCORE_ENVIRONMENT=Development
-            - Server:Url=http://localhost:1555/api/
+            - ServerUrl=http://mahmud.api.20.219.235.7.nip.io/api/
         ports:
-            - "8080:80"
+            - "1666:80"
             - "16666:443"
         depends_on:
             - todo-server
         networks:
             - todo_nets
-
-    todo.webui:
-      image: ${DOCKER_REGISTRY-}todowebui
-      build:
-        context: .
-        dockerfile: WebUI/Dockerfile
 
 networks:
   todo_nets:

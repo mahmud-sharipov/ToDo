@@ -41,4 +41,4 @@ metadata:
   name: client-configmap
   namespace: todo-dev
 data:
-  server_url: http://todo-server-service:1555/api/
+  server_url: http://api.mahmud.20.219.235.7.nip.io

@@ -11,8 +11,8 @@ namespace Todo.WebUI
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(@"http://51.138.183.239:30001/api/") });
+            var t = builder.Configuration["ServerUrl"];
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ServerUrl"]) });
             builder.Services.AddScoped<ToDoService>();
 
             var app = builder.Build();
