@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/mahmud-sharipov/ToDo.git
     targetRevision: HEAD
-    path: Infrastructure/k8s/Environments/production/deploymen/
+    path: Infrastructure/k8s/Environments/production/deployment/
 
   destination:
     server: https://kubernetes.default.svc
