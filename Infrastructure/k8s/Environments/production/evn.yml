@@ -15,3 +15,30 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: todo-dev
+type: Opaque
+data:
+  postgres-password: dXNlcm5hbWU=
+  postgres-user: cGFzc3dvcmQ=
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-configmap
+  namespace: todo-dev
+data:
+  database_url: postgres-service
+  database_name: ToDo
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-configmap
+  namespace: todo-dev
+data:
+  server_url: http://todo-server-service:1555/api/
