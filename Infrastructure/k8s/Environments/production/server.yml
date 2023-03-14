@@ -66,7 +66,7 @@ metadata:
   name: todo-server-service
   namespace: todo-dev
 spec:
-  type: LoadBalancer
+  #type: LoadBalancer
   selector:
     app: server
   ports:
@@ -74,23 +74,25 @@ spec:
       port: 30001
       targetPort: 80
 ---
-#apiVersion: networking.k8s.io/v1
-#kind: Ingress
-#metadata:
-#  annotations:
-#    kubernetes.io/ingress.class: addon-http-application-routing
-#  name: todo-server-ingress
-#  namespace: todo-dev
-#spec:
-#  ingressClassName: nginx
-#  rules:
-#    - host: api.51.138.231.88.nip.io
-#      http:
-#        paths:
-#          - path: /
-#            pathType: Prefix
-#            backend:
- #             service:
- #               name: todo-server-service
- #               port:
- #                 number: 1555
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: todo-server-ingress
+  namespace: todo-dev
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mahmud.20.219.235.7.nip.io
+      http:
+        paths:
+          - path: /swagger
+            pathType: Prefix
+            backend:
+              service:
+                name: todo-server-service
+                port:
+                  number: 30001

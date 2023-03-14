@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: vcluster-ingress
+  namespace: mahmud
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mahmud.20.219.235.7.nip.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: mahmud-vcluster
+                port:
+                  number: 443
+            path: /
+            pathType: ImplementationSpecific

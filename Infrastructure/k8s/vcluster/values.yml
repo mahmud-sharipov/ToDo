@@ -1,0 +1,6 @@
+sync:
+  ingresses:
+    enabled: true
+  nodes:
+    enabled: true
+    syncAllNodes: true
