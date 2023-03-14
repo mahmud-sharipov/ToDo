@@ -1,0 +1,218 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: todo-dev
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-server-service
+  namespace: todo-dev
+spec:
+  selector:
+    app: server
+  ports:
+    - protocol: TCP
+      port: 1555
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-client-service
+  namespace: todo-dev
+spec:
+  selector:
+    app: client
+  ports:
+    - protocol: TCP
+      port: 1666
+      targetPort: 80
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: todo-dev
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-user
+            - name: PGDATA
+              value: /var/lib/postgresql/data/todo/
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim: 
+            claimName: postgres-pvc
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: todo-dev
+  labels:
+    app: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+        - name: todo-server
+          image: mahmudsharipov/todoserver:1.31
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "0.5"
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: Database__User
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-user
+            - name: Database__Password
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: Database__Server
+              valueFrom:
+                configMapKeyRef:
+                  name: server-configmap
+                  key: database_url
+            - name: Database__Name
+              valueFrom:
+                configMapKeyRef:
+                  name: server-configmap
+                  key: database_name
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: todo-dev
+  labels:
+    app: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: todo-client
+          image: mahmudsharipov/todoclient:1.7
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "0.5"
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ServerUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: client-configmap
+                  key: server_url
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: todo-server-ingress
+  namespace: todo-dev
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.mahmud.20.219.235.7.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: todo-server-service
+                port:
+                  number: 1555
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: todo-client-ingress
+  namespace: todo-dev
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mahmud.20.219.235.7.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: todo-client-service
+                port:
+                  number: 1666
