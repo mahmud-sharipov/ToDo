@@ -26,7 +26,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: mahmudsharipov/todoclient:${{ github.event.inputs.image_tag }}
+          tags: mahmudsharipov/todosrver:${{ github.event.inputs.image_tag }}
           file: ./src/API/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
