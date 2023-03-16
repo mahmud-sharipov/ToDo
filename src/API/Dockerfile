@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["src/API/ToDo.Api.csproj", "API/"]
 COPY ["src/Shared/ToDo.Shared.csproj", "Shared/"]
-RUN dotnet restore "src/API/ToDo.Api.csproj"
+RUN dotnet restore "API/ToDo.Api.csproj"
 COPY . .
 WORKDIR "/API"
 RUN dotnet build "ToDo.Api.csproj" -c Release -o /app/build
