@@ -5,9 +5,9 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["API/ToDo.Api.csproj", "API/"]
-COPY ["Shared/ToDo.Shared.csproj", "Shared/"]
-RUN dotnet restore "API/ToDo.Api.csproj"
+COPY ["src/API/ToDo.Api.csproj", "src/API/"]
+COPY ["src/Shared/ToDo.Shared.csproj", "src/Shared/"]
+RUN dotnet restore "src/API/ToDo.Api.csproj"
 COPY . .
 WORKDIR "/src/API"
 RUN dotnet build "ToDo.Api.csproj" -c Release -o /app/build
