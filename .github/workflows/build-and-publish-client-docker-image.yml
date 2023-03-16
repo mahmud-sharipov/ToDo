@@ -1,4 +1,4 @@
-name: Build and Publish Server Docker image
+name: Build and Publish Client Docker image
 on:
   workflow_dispatch:
     inputs:
