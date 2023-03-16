@@ -1,0 +1,18 @@
+name: Build and Publish Server Docker image
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: tag for image
+        default: 1.0.0
+        required: true
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push server app
+        uses: "./.github/template/deploy-docker-image"
+        with:
+          image_repo_name: mahmudsharipov/todoclient
+          image_tag: ${{ github.event.inputs.image_tag }}
+          docker_file: "./src/Web.Server/Dockerfile"
