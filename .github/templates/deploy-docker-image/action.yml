@@ -1,15 +1,15 @@
 name: Build and Publish Docker image
 
 inputs:
-  image_tag:
-    default: 1.0.0
-    required: true
-  image_repo_name:
-    required: true
-    type: string
-  docker_file:
-    required: true
-    type: string
+    image_tag:
+      default: 1.0.0
+      required: true
+    image_repo_name:
+      required: true
+      type: string
+    docker_file:
+      required: true
+      type: string
     
 runs:
   using: "composite"
