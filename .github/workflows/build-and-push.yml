@@ -6,9 +6,7 @@ on:
         description: Who to greet
         default: 1.0.0
         required: true
-  push:
-    branches:
-      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
