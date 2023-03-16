@@ -50,7 +50,7 @@ public class TodoClient
 
     public async Task<List<TodoItemResponseDto>?> GetTodosAsync(bool? isCompleted, bool? hasDueDate, string orderBy = "DueDate", bool orderByDescending = false)
     {
-        var uri = $"todos?orderBy={orderBy}&orderByDescending={orderByDescending}";
+        var uri = $"todos?orderBy={orderBy}&orderByDescending={(orderByDescending ? "1" : "0")}";
         if (isCompleted is not null)
             uri += $"&isCompleted=" + isCompleted.Value;
         if (hasDueDate is not null)

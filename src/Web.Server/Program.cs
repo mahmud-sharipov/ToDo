@@ -31,8 +31,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.MapFallbackToPage("/_Host");
+
 app.MapTodos(todoUrl);
 
-app.MapFallbackToPage("/_Host");
 
 app.Run();

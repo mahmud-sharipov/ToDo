@@ -1,6 +1,7 @@
 ﻿@using ToDo.Shared
 @inject TodoClient _client
 @using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JSRuntime;
 
 <PageTitle>To do list</PageTitle>
 
@@ -124,17 +125,20 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await JSRuntime.InvokeVoidAsync("console.log", "OnInitializedAsync");
         await LoadItems();
     }
 
     async Task OnTodoDelete(TodoItemResponseDto todoItem)
     {
+        await JSRuntime.InvokeVoidAsync("console.log", "OnTodoDelete");
         if ((await _client.DeleteTodoAsync(todoItem.Id)))
             _todoItems.Remove(todoItem);
     }
 
     async Task TagleTodoStatus(TodoItemResponseDto todoItem)
     {
+        await JSRuntime.InvokeVoidAsync("console.log", "TagleTodoStatus");
         todoItem.IsComplete = !todoItem.IsComplete;
         if (!(await _client.UpdateTodoAsync(todoItem)))
             todoItem.IsComplete = !todoItem.IsComplete;
@@ -142,6 +146,7 @@ else
 
     async Task OnCreateNewTodo()
     {
+        await JSRuntime.InvokeVoidAsync("console.log", "OnCreateNewTodo");
         var createdTodo = await _client.AddTodoAsync(NewTodoTitle, NewTodoDate);
         if (createdTodo is not null)
         {
@@ -167,6 +172,7 @@ else
             _ => null
         };
 
+        await JSRuntime.InvokeVoidAsync("console.log", $"LoadItems: FilterBy = {FilterBy}, OrderBy = {OrderBy}, OrderByDesc = {OrderByDesc}");
         _todoItems = await _client.GetTodosAsync(isCompleted, hasDueDate, OrderBy, OrderByDesc);
     }
 

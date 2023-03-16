@@ -31,10 +31,10 @@ public class TodosController : ControllerBase
             query = orderByDescending ? query.OrderBy(exp) : query.OrderByDescending(exp);
         }
 
-        if (isCompleted.HasValue)
-            query = query.Where(t => t.IsComplete == isCompleted.HasValue);
+        if (isCompleted is not null)
+            query = query.Where(t => t.IsComplete == isCompleted.Value);
 
-        if (hasDueDate.HasValue)
+        if (hasDueDate is not null)
             query = hasDueDate.Value ? query.Where(t => t.Date != null) : query.Where(t => t.Date == null);
 
         return await query.AsNoTracking().Select(t => t.AsTodoItem()).ToListAsync();
