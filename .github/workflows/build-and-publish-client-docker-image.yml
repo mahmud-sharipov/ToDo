@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build and push server app
-        uses: "./.github/template/deploy-docker-image"
+        uses: "./.github/templates/deploy-docker-image"
         with:
           image_repo_name: mahmudsharipov/todoclient
           image_tag: ${{ github.event.inputs.image_tag }}
-          docker_file: "../src/Web.Server/Dockerfile"
+          docker_file: "./src/Web.Server/Dockerfile"
