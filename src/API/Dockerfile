@@ -11,7 +11,7 @@ COPY ["src/API/ToDo.Api.csproj", "API/"]
 COPY ["src/Shared/ToDo.Shared.csproj", "Shared/"]
 RUN dotnet restore "API/ToDo.Api.csproj"
 COPY . .
-WORKDIR "/src/API"
+WORKDIR "/src/src/API"
 RUN dotnet build "ToDo.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
