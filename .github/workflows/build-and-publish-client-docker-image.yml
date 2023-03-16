@@ -31,6 +31,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy:
+    needs: docker
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Client Deploy Production
@@ -38,5 +39,5 @@ jobs:
         with:
           token: ${{ secrets.TODO_INFRA_PERSONAL_ACCESS_TOKEN }}
           repository: mahmud-sharipov/ToDo.Infrastructure
-          event-type: release-todo-client-production
+          event-type: deploy-todo-client-production
           tag: ${{ inputs.image_tag }}
