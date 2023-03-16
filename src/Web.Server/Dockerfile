@@ -7,12 +7,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Web.Server/ToDo.Web.Server.csproj", "Web.Server/"]
-COPY ["Web.Client/ToDo.Web.Client.csproj", "Web.Client/"]
-COPY ["Shared/ToDo.Shared.csproj", "Shared/"]
+COPY ["src/Web.Server/ToDo.Web.Server.csproj", "Web.Server/"]
+COPY ["src/Web.Client/ToDo.Web.Client.csproj", "Web.Client/"]
+COPY ["src/Shared/ToDo.Shared.csproj", "Shared/"]
 RUN dotnet restore "Web.Server/ToDo.Web.Server.csproj"
 COPY . .
-WORKDIR "/src/Web.Server"
+WORKDIR "/src/src/Web.Server"
 RUN dotnet build "ToDo.Web.Server.csproj" -c Release -o /app/build
 
 FROM build AS publish

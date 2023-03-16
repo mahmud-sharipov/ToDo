@@ -1,11 +1,21 @@
-name: Build Docker image
+name: Build and Publish Docker image
 on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: Who to greet
+        description: tag for image
         default: 1.0.0
         required: true
+      image_repo_name:
+        description: the image repository
+        required: true
+        type: string
+        default: mahmudsharipov/todo
+      docker_file:
+        description: the path to docker file (Web.Server, API)
+        required: true
+        type: string
+        default: ./src/{app}/Dockerfile
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -26,7 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: mahmudsharipov/todosrver:${{ github.event.inputs.image_tag }}
-          file: ./src/API/Dockerfile
+          tags: ${{ github.event.inputs.image_repo_name }}:${{ github.event.inputs.image_tag }}
+          file: ${{ github.event.inputs.docker_file }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
