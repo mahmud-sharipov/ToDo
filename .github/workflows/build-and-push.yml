@@ -27,4 +27,4 @@ jobs:
           context: .
           push: true
           tags: todoclient:${{ github.event.inputs.image_tag }}
-          file: ./src/Web.Server/Dockerfile
+          file: ./src/API/Dockerfile
