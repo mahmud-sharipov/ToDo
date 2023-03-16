@@ -15,4 +15,4 @@ jobs:
         with:
           image_repo_name: mahmudsharipov/todoclient
           image_tag: ${{ github.event.inputs.image_tag }}
-          docker_file: "./src/Web.Server/Dockerfile"
+          docker_file: "../src/Web.Server/Dockerfile"
