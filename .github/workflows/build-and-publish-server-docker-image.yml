@@ -1,10 +1,11 @@
 name: Build and Publish Server Docker image
 on:
   workflow_dispatch:
-    image_tag:
-      description: tag for image
-      default: 1.0.0
-      required: true
+    inputs:
+      image_tag:
+        description: tag for image
+        default: 1.0.0
+        required: true
 jobs:
   docker:
     runs-on: ubuntu-latest
